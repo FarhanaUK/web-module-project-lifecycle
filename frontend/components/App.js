@@ -28,7 +28,7 @@ setAxiosError = err => {
 postNewTodo = () => {
   axios.post(URL, {name: this.state.todoNameInput})
   .then(res => {
-    this.fetchAllTodos()
+    this.setState({...this.state, todos: this.state.todos.concat(res.data.data)})
     this.resetFrom()
   })
   .catch(this.setAxiosError())
