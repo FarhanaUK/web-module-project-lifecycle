@@ -17,16 +17,21 @@ this.setState ({...this.state, todoNameInput: value})
 
 }
 
+resetFrom = () => {
+  this.setState({...this.state, todoNameInput: ''})
+}
+
+setAxiosError = err => {
+  this.setState({...this.state, error: err.response.data.message})
+}
 
 postNewTodo = () => {
   axios.post(URL, {name: this.state.todoNameInput})
   .then(res => {
     this.fetchAllTodos()
-    this.setState({...this.state, todoNameInput: ''})
+    this.resetFrom()
   })
-  .catch(err => {
-    this.setState({...this.state, error: err.response.data.message})
-})
+  .catch(this.setAxiosError())
 
 }
 fetchAllTodos =() => {
@@ -34,9 +39,7 @@ axios.get(URL)
 .then(res => {
  this.setState({...this.state, todos: res.data.data})
 })
-.catch(err => {
-  this.setState({...this.state, error: err.response.data.message})
-})
+.catch(this.setAxiosError)
 }
 
 
