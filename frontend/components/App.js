@@ -71,13 +71,17 @@ this.fetchAllTodos()
       <div>
         <div id="error">Error:{this.state.error}</div>
         <TodoList 
-        displayCompleted={this.state.displayCompleted}/>
+        displayCompleted={this.state.displayCompleted}
+        todos={this.state.todos}
+        toggleCompleted={this.toggleCompleted}
+        />
         <Form 
         onTodoFormSubmit={this.onTodoFormSubmit}
         todoNameInput={this.state.todoNameInput}
         onTodoNameInputChange={this.onTodoNameInputChange}
         toggleDisplayCompleted={this.toggleDisplayCompleted}
-        displayCompleted={this.state.displayCompleted}/>
+        displayCompleted={this.state.displayCompleted}
+        />
       </div>
     )
   }
