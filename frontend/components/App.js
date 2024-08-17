@@ -6,15 +6,16 @@ const URL = 'http://localhost:9000/api/todos'
 export default class App extends React.Component {
 state = {
   todos: [],
+  error: ''
 }
 
 fetchAllTodos =() => {
 axios.get(URL)
 .then(res => {
- this.setState({todos: res.data.data})
+ this.setState({...this.state, todos: res.data.data})
 })
 .catch(err => {
-  debugger
+  this.setState({...this.state, error: err.response.data.message})
 })
 }
 componentDidMount() {
@@ -24,7 +25,7 @@ this.fetchAllTodos()
   render() {
     return (
       <div>
-        <div id="error">Error: No error here</div>
+        <div id="error">Error:{this.state.error}</div>
         <div id= "todos">
           <h2>Todos:</h2>
           {this.state.todos.map(td => {
@@ -41,3 +42,8 @@ this.fetchAllTodos()
     )
   }
 }
+
+
+//network request does not work, 
+//debugger on then does not show res on local
+//everytime I click on the network and refresh the browser it disconnets 
