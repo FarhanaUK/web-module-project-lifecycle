@@ -16,6 +16,19 @@ onTodoNameInputChange = evt => {
 this.setState ({...this.state, todoNameInput: value})
 
 }
+
+
+postNewTodo = () => {
+  axios.post(URL, {name: this.state.todoNameInput})
+  .then(res => {
+    this.fetchAllTodos()
+    this.setState({...this.state, todoNameInput: ''})
+  })
+  .catch(err => {
+    this.setState({...this.state, error: err.response.data.message})
+})
+
+}
 fetchAllTodos =() => {
 axios.get(URL)
 .then(res => {
@@ -27,12 +40,17 @@ axios.get(URL)
 }
 
 
-
+onTodoFormSubmit = evt => {
+  evt.preventDefault()
+  this.postNewTodo()
+}
 
 componentDidMount() {
 this.fetchAllTodos()
 
 }
+
+
   render() {
     return (
       <div>
@@ -44,7 +62,7 @@ this.fetchAllTodos()
             })
              }
         </div>
-        <form id="todoForm">
+        <form id="todoForm" onSubmit={this.onTodoFormSubmit}>
         <input value ={this.state.todoNameInput} onChange={this.onTodoNameInputChange}  type="text" placeholder="Type todo"/>
         <input type="submit"/>
         <button>Clear Completed</button>
@@ -56,5 +74,5 @@ this.fetchAllTodos()
 
 
 //network request does not work, 
-//debugger on then does not show res on local
+//debugger does not work on the app js
 //everytime I click on the network and refresh the browser it disconnets 
