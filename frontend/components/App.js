@@ -8,13 +8,12 @@ state = {
   todos: [],
   error: '',
   todoNameInput: '',
+  displayCompleted: true,
 }
-
 
 onTodoNameInputChange = evt => {
   const {value} = evt.target
 this.setState ({...this.state, todoNameInput: value})
-
 }
 
 resetFrom = () => {
@@ -31,7 +30,7 @@ postNewTodo = () => {
     this.setState({...this.state, todos: this.state.todos.concat(res.data.data)})
     this.resetFrom()
   })
-  .catch(this.setAxiosError())
+  .catch(this.setAxiosError)
 
 }
 fetchAllTodos =() => {
@@ -42,17 +41,29 @@ axios.get(URL)
 .catch(this.setAxiosError)
 }
 
-
 onTodoFormSubmit = evt => {
   evt.preventDefault()
   this.postNewTodo()
 }
 
-componentDidMount() {
-this.fetchAllTodos()
-
+toggleCompleted= id => () => {
+  axios.patch(`${URL}/${id}`)
+.then(res => {
+  this.setState({...this.state, todos: this.state.todos.map(td => {
+    if(td.id == id) return td
+    return res.data.data
+  }) 
+})
+})
+.catch(this.setAxiosError)
 }
 
+toggleDisplayCompleted =() => {
+  this.setState({...this.state, displayCompleted: !this.state.displayCompleted})
+}
+componentDidMount() {
+this.fetchAllTodos()
+}
 
   render() {
     return (
@@ -60,16 +71,21 @@ this.fetchAllTodos()
         <div id="error">Error:{this.state.error}</div>
         <div id= "todos">
           <h2>Todos:</h2>
-          {this.state.todos.map(td => {
-            return <div key={td.id}>{td.name}</div>
-            })
+          {
+          this.state.todos.reduce((acc, td) => {
+              if(this.state.displayCompleted || !td.completed ) return acc.concat(
+                <div onClick={this.toggleCompleted(td.id)} key={td.id}>{td.name} {td.completed ?  '✔' : '' }</div>
+              )
+                return acc
+          }, [])
+            
              }
         </div>
         <form id="todoForm" onSubmit={this.onTodoFormSubmit}>
         <input value ={this.state.todoNameInput} onChange={this.onTodoNameInputChange}  type="text" placeholder="Type todo"/>
         <input type="submit"/>
-        <button>Clear Completed</button>
         </form>
+        <button onClick={this.toggleDisplayCompleted}>{this.state.displayCompleted ? 'hide' : 'show'} completed</button>
       </div>
     )
   }
